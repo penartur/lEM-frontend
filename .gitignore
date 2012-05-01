@@ -5,9 +5,10 @@ obj
 # mstest test results
 TestResults
 
-#user-specific settings
+# User-specific settings
 *.suo
 *Resharper*
+App.config
 
 #node
 node_modules
