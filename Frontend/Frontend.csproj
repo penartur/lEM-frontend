@@ -41,13 +41,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.js" />
+    <Content Include="common\cliwrapper.js" />
+    <Content Include="config.js" />
     <Content Include="public\stylesheets\style.css" />
     <Content Include="routes\index.js" />
+    <Content Include="routes\raw.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="package.json" />
     <None Include="views\index.jade" />
     <None Include="views\layout.jade" />
+    <None Include="views\raw.jade" />
+    <None Include="views\rawresponse.jade" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\images\" />

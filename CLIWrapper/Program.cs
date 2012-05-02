@@ -30,7 +30,7 @@ namespace penartur.lEM.CLIWrapper {
 					Console.WriteLine("Process started");
 					Console.WriteLine(processWrapper.process.Id);
 					var now = DateTime.Now;
-					while(DateTime.Now - now < TimeSpan.FromSeconds(60)) {
+					while(DateTime.Now - now < TimeSpan.FromSeconds(5)) {
 						if(new FileInfo(outfile.fileName).Length > 0) {
 							System.Threading.Thread.Sleep(TimeSpan.FromSeconds(0.1)); //let it finish the writing
 							break;

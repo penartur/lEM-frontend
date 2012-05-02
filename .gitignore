@@ -10,6 +10,7 @@ TestResults
 *Resharper*
 App.config
 *.user
+config.js
 
 #node
 node_modules
