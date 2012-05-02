@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace CLIWrapper {
+namespace penartur.lEM.CLIWrapper {
 	class ProcessWrapper : IDisposable {
 
 		public readonly Process process;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace CLIWrapper {
+namespace penartur.lEM.CLIWrapper {
 	class TmpFile : IDisposable {
 
 		private class FinalStream : ProxyStream {

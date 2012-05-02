@@ -8,8 +8,8 @@
     <ProjectGuid>{D2766552-F2D1-48B7-A89C-BAE2691BCB45}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CLIWrapper</RootNamespace>
-    <AssemblyName>CLIWrapper</AssemblyName>
+    <RootNamespace>penartur.lEM.CLIWrapper</RootNamespace>
+    <AssemblyName>penartur.lEM.CLIWrapper</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -46,8 +46,12 @@
     <Compile Include="TmpFile.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="App.config.example" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="App.config.example">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

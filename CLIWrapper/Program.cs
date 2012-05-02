@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Configuration;
 using System.IO;
 
-namespace CLIWrapper {
+namespace penartur.lEM.CLIWrapper {
 	class Program {
 		static void Main(string[] args) {
 			using(

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace CLIWrapper {
+namespace penartur.lEM.CLIWrapper {
 	class ProxyStream : Stream {
 
 		private Stream inner;
