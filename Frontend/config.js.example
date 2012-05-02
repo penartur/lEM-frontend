@@ -1,0 +1,1 @@
+﻿exports.pathToCliWrapper = '../CLIWrapper/bin/Debug/penartur.lEM.CLIWrapper.exe';
