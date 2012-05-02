@@ -11,7 +11,8 @@ namespace penartur.lEM.CLIWrapper {
 			using(
 				TmpFile infile = new TmpFile(),
 						outfile = new TmpFile(),
-						logfile = new TmpFile()
+						logfile = new TmpFile(),
+						errfile = new TmpFile()
 			) {
 
 				using(var inwriter = infile.GetWriter()) {
@@ -24,25 +25,17 @@ namespace penartur.lEM.CLIWrapper {
 
 				var processStartInfo = new ProcessStartInfo(
 					ConfigurationManager.AppSettings["lEM-executable-path"].ToString(),
-					string.Format("\"{0}\" \"{1}\" \"{2}\"", infile.fileName, outfile.fileName, logfile.fileName)
+					string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"", infile.fileName, outfile.fileName, errfile.fileName, logfile.fileName)
 				);
 				using(var processWrapper = new ProcessWrapper(processStartInfo)) {
 					Console.WriteLine("Process started");
 					Console.WriteLine(processWrapper.process.Id);
-					var now = DateTime.Now;
-					while(DateTime.Now - now < TimeSpan.FromSeconds(5)) {
-						if(new FileInfo(outfile.fileName).Length > 0) {
-							System.Threading.Thread.Sleep(TimeSpan.FromSeconds(0.1)); //let it finish the writing
-							break;
-						} else {
-							System.Threading.Thread.Sleep(TimeSpan.FromSeconds(0.1));
-						}
-					}
+					processWrapper.process.WaitForExit(5 * 1000);
 				}
 
-				using(var logreader = logfile.GetReader()) {
+				using(var errreader = errfile.GetReader()) {
 					while(true) {
-						var line = logreader.ReadLine();
+						var line = errreader.ReadLine();
 						if(line == null) break;
 						Console.Error.WriteLine(line);
 					}
@@ -51,6 +44,15 @@ namespace penartur.lEM.CLIWrapper {
 				using(var outreader = outfile.GetReader()) {
 					while(true) {
 						var line = outreader.ReadLine();
+						if(line == null) break;
+						Console.Out.WriteLine(line);
+					}
+				}
+
+				using(var logreader = logfile.GetReader()) {
+					Console.Out.WriteLine("<<<log follows>>>");
+					while(true) {
+						var line = logreader.ReadLine();
 						if(line == null) break;
 						Console.Out.WriteLine(line);
 					}
