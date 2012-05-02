@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using System.Configuration;
+using System.IO;
 
 namespace CLIWrapper {
 	class Program {
@@ -28,7 +29,15 @@ namespace CLIWrapper {
 				using(var processWrapper = new ProcessWrapper(processStartInfo)) {
 					Console.WriteLine("Process started");
 					Console.WriteLine(processWrapper.process.Id);
-					Console.ReadLine();
+					var now = DateTime.Now;
+					while(DateTime.Now - now < TimeSpan.FromSeconds(60)) {
+						if(new FileInfo(outfile.fileName).Length > 0) {
+							System.Threading.Thread.Sleep(TimeSpan.FromSeconds(0.1)); //let it finish the writing
+							break;
+						} else {
+							System.Threading.Thread.Sleep(TimeSpan.FromSeconds(0.1));
+						}
+					}
 				}
 
 				using(var logreader = logfile.GetReader()) {
