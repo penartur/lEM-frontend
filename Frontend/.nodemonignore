@@ -1,0 +1,7 @@
+Properties
+bin
+obj
+.gitignore
+*.csproj
+*.user
+*.example
