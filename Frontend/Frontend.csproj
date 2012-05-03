@@ -44,6 +44,8 @@
     <Content Include="common\cliwrapper.js" />
     <Content Include="config.js" />
     <None Include="config.js.example" />
+    <Content Include="public\javascripts\mootools-more-1.4.0.1.js" />
+    <Content Include="public\javascripts\raw.js" />
     <Content Include="public\stylesheets\style.css" />
     <Content Include="routes\index.js" />
     <Content Include="routes\raw.js" />
@@ -53,11 +55,9 @@
     <None Include="views\index.jade" />
     <None Include="views\layout.jade" />
     <None Include="views\raw.jade" />
-    <None Include="views\rawresponse.jade" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\images\" />
-    <Folder Include="public\javascripts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

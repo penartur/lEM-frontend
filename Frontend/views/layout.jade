@@ -1,6 +1,9 @@
 !!!
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body!= body
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		//script(language='Javascript', src='/javascripts/MochiKit.js')
+		script(language='Javascript', src='https://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js')
+		script(language='Javascript', src='/javascripts/mootools-more-1.4.0.1.js')
+	body!= body

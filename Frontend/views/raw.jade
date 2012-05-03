@@ -1,9 +1,15 @@
 ﻿
+script(language='Javascript', src='/javascripts/raw.js')
+
 h1 Direct lEM interoperation
 
-form(method='POST')
+form(method='post', action = '', id='rawQuery')
 	h3 Enter your commands here:
 	p
-		textarea(name='commands', rows=20, cols=80)
+		textarea(class='required', name='commands', rows=20, cols=80, title='Enter your commands here')
 	p
 		input(type='submit', value='Run')
+
+div(id='resultContainer', style='display:none')
+	h3 Result
+	pre(id='resultPlaceholder')
