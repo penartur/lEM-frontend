@@ -33,6 +33,8 @@ app.configure('production', function(){
 app.get('/', routes.index);
 app.get('/raw/', routes.raw.get);
 app.post('/raw/', routes.raw.post);
+app.get('/unrestricted-lcm/', routes.unrestrictedLcm.get);
+app.post('/unrestricted-lcm/', routes.unrestrictedLcm.post);
 
 app.listen(3000, function(){
 	console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

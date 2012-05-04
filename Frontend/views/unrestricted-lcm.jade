@@ -1,0 +1,19 @@
+h1 Unrestricted LCM
+
+form(method='post', action = '', class='rawResponse')
+	p
+		input(type='text', name='lat', title='Number of latent variables')
+	p
+		input(type='text', name='man', title='Number of manifest variables')
+	p
+		input(type='text', name='dim', title='dim')
+	p
+		input(type='text', name='mod', title='mod')
+	p
+		input(type='text', name='dat', title='dat')
+	p
+		input(type='submit', value='submit')
+
+div(id='resultContainer', style='display:none')
+	h3 Result
+	pre(id='resultPlaceholder')
