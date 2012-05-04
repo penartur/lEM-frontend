@@ -1,6 +1,6 @@
 h1 Unrestricted latent class model
 
-form(method='post', action = '', class='rawResponse')
+form.rawResponse(method='post', action = '', class='rawResponse')
 	p
 		input(type='text', name='lat', title='Number of latent variables')
 	p
@@ -14,6 +14,6 @@ form(method='post', action = '', class='rawResponse')
 	p
 		input(type='submit', value='submit')
 
-div(id='resultContainer', style='display:none')
+div#resultContainer(style='display:none')
 	h3 Result
-	pre(id='resultPlaceholder')
+	pre#resultPlaceholder
