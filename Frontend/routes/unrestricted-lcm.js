@@ -1,7 +1,7 @@
 ﻿var cliwrapper = require('../common/cliwrapper.js');
 
 exports.get = function (req, res, next) {
-	res.render('unrestricted-lcm', { title: 'Unrestricted LCM' });
+	res.render('unrestricted-lcm', { title: 'Unrestricted latent class model' });
 };
 
 exports.post = function (req, res, next) {
