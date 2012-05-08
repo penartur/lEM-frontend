@@ -1,15 +1,20 @@
-script(language='Javascript', src='/javascripts/unrestricted-lcm.js')
+extends layout
 
-h1 Unrestricted latent class model
+append scripts
+	script(language='Javascript', src='/javascripts/unrestricted-lcm.js')
 
-form.rawResponse#unrestrictedLcmForm(method='post', action = '')
-	#latentFieldset
-		p: input(type='text', name='latentNumber', title='Number of latent variables', data-validators='validate-integer')
-	#manifestFieldset
-		p: input(type='text', name='manifestNumber', title='Number of manifest variables', data-validators='validate-integer')
-	p: textarea(name='data', title='data')
-	p: input(type='submit', value='submit')
+append body
 
-div#resultContainer(style='display:none')
-	h3 Result
-	pre#resultPlaceholder
+	.page-header: h1 Unrestricted latent class model
+
+	form.rawResponse.well#unrestrictedLcmForm(method='post', action = '')
+		#latentFieldset
+			p: input.required(type='text', name='latentNumber', placeholder='Number of latent variables', data-validators='validate-integer')
+		#manifestFieldset
+			p: input.required(type='text', name='manifestNumber', placeholder='Number of manifest variables', data-validators='validate-integer')
+		p: textarea.input-xlarge.required(name='data', placeholder='data', rows=4)
+		p: button.btn(type='submit') Submit
+
+	div#resultContainer(style='display:none')
+		h3 Result
+		pre#resultPlaceholder

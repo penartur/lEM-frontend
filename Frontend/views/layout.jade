@@ -2,9 +2,11 @@
 html
 	head
 		title= title
-		link(rel='stylesheet', href='/stylesheets/style.css')
-		//script(language='Javascript', src='/javascripts/MochiKit.js')
-		script(language='Javascript', src='https://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js')
-		script(language='Javascript', src='/javascripts/mootools-more-1.4.0.1.js')
-		script(language='Javascript', src='/javascripts/rawResponse.js')
-	body!= body
+		link(rel='stylesheet', href='/third-party/bootstrap/css/bootstrap-responsive.css')
+		link(rel='stylesheet', href='/third-party/bootstrap/css/bootstrap.css')
+		block scripts
+			script(language='Javascript', src='/third-party/mootools/mootools-yui-compressed.js')
+			script(language='Javascript', src='/third-party/mootools/mootools-more-1.4.0.1.js')
+			script(language='Javascript', src='/javascripts/rawResponse.js')
+	body: .container
+		block body

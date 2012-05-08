@@ -19,16 +19,16 @@
 				var input = (new Element('input', {
 					type: 'text',
 					name: diName,
-					title: 'Dimension of the ' + (i + 1) + 'th ' + title + ' variable',
+					placeholder: 'Dimension of the ' + (i + 1) + 'th ' + title + ' variable',
 					'data-validators': 'validate-integer'
 				}));
 				lfs.grab(
 				(new Element('p', { class: dpName })).grab(input),
 				'bottom'
 			);
-				new OverText(input);
+				//new OverText(input);
 			}
-			OverText.update();
+			//OverText.update();
 		});
 	}
 
