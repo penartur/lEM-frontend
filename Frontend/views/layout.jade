@@ -1,12 +1,32 @@
+mixin navLink(path, text)
+	li(class = (path == currentPath) && 'active'): a(href=path) #{text}
+
 !!!
 html
 	head
 		title= title
-		link(rel='stylesheet', href='/third-party/bootstrap/css/bootstrap-responsive.css')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 		link(rel='stylesheet', href='/third-party/bootstrap/css/bootstrap.css')
+		style(type='text/css').
+			body {
+				padding-top: 60px;
+				padding-bottom: 40px;
+			}
+		link(rel='stylesheet', href='/third-party/bootstrap/css/bootstrap-responsive.css')
 		block scripts
 			script(language='Javascript', src='/third-party/mootools/mootools-yui-compressed.js')
 			script(language='Javascript', src='/third-party/mootools/mootools-more-1.4.0.1.js')
 			script(language='Javascript', src='/javascripts/rawResponse.js')
-	body: .container
-		block body
+	body
+		.navbar.navbar-fixed-top
+			.navbar-inner
+				.container
+					//a.btn.btn-navbar x
+					a.brand(href='/') lEM frontend
+					.nav-collapse
+						ul.nav
+							+navLink('/', 'Home')
+							+navLink('/raw/', 'Raw request')
+							+navLink('/unrestricted-lcm/', 'Unrestricted LCM')
+		.container
+			block body
