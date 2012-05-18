@@ -1,10 +1,6 @@
 ﻿window.addEvent('domready', function () {
 	$$('form.rawResponse').each(function (f) {
 		f.init = function () {
-			//f.getElements('[type=text], textarea').each(function (el) { new OverText(el); });
-
-			new Form.Validator.Inline(f);
-
 			new Form.Request(f, null, {
 				requestOptions: {
 				},

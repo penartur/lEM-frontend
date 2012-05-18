@@ -8,11 +8,15 @@ append body
 	.page-header: h1 Unrestricted latent class model
 
 	form.rawResponse.well#unrestrictedLcmForm(method='post', action = '')
-		#latentFieldset
-			p: input.required(type='text', name='latentNumber', placeholder='Number of latent variables', data-validators='validate-integer')
-		#manifestFieldset
-			p: input.required(type='text', name='manifestNumber', placeholder='Number of manifest variables', data-validators='validate-integer')
-		p: textarea.input-xlarge.required(name='data', placeholder='data', rows=4)
+		fieldset#latentFieldset
+			legend Latent variables
+			p: input.required(type='number', min='1', required, name='latentNumber', placeholder='Number of latent variables', data-validators='validate-integer')
+		fieldset#manifestFieldset
+			legend Manifest variables
+			p: input.required(type='number', min='1', required, name='manifestNumber', placeholder='Number of manifest variables', data-validators='validate-integer')
+		fieldset
+			legend Data
+			p: textarea.input-xlarge.required(name='data', required, placeholder='data', rows=4)
 		p: button.btn(type='submit') Submit
 
 	div#resultContainer(style='display:none')
