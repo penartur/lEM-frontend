@@ -1,8 +1,11 @@
-﻿var cluster = require('cluster');
-var os = require('os');
+"use strict";
+
+var cluster = require('cluster'),
+	os = require('os');
 
 exports.run = function () {
-	for (var i = 0; i < os.cpus().length; i++) {
+	var i;
+	for (i = 0; i < os.cpus().length; i++) {
 		cluster.fork();
 	}
 
@@ -10,4 +13,4 @@ exports.run = function () {
 		console.log('Worker %d died', worker.pid);
 		cluster.fork();
 	});
-}
+};

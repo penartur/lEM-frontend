@@ -1,11 +1,14 @@
-﻿var spawn = require('child_process').spawn;
+"use strict";
+
+var spawn = require('child_process').spawn;
 var config = require('../config');
 
 //callback is function(err, result)
 exports.callLem = function (input, callback) {
-	var result = "";
-	var error = "";
-	var wrapper = spawn(config.pathToCliWrapper);
+	var result = "",
+		error = "",
+		wrapper = spawn(config.pathToCliWrapper);
+
 	wrapper.stdout.on('data', function (data) {
 		result += data;
 	});
@@ -23,4 +26,4 @@ exports.callLem = function (input, callback) {
 	});
 	wrapper.stdin.write(input);
 	wrapper.stdin.end();
-}
+};

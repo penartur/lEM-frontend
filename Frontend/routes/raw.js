@@ -1,4 +1,6 @@
-﻿var cliwrapper = require('../common/cliwrapper.js');
+"use strict";
+
+var cliwrapper = require('../common/cliwrapper.js');
 
 exports.get = function (req, res, next) {
 	res.render('raw', {

@@ -1,7 +1,9 @@
-﻿var cliwrapper = require('../common/cliwrapper.js');
+"use strict";
 
-var latentNames = ['X', 'Y', 'Z'];
-var manifestNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+var cliwrapper = require('../common/cliwrapper.js');
+
+var latentNames = ['X', 'Y', 'Z'],
+	manifestNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
 exports.get = function (req, res, next) {
 	res.render('unrestricted-lcm', {
@@ -11,37 +13,36 @@ exports.get = function (req, res, next) {
 };
 
 exports.post = function (req, res, next) {
-	//console.log(req.body);
-	var latentNumber = req.body.latentNumber;
-	var manifestNumber = req.body.manifestNumber;
-	var latentDimensions = req.body.latentDimension;
-	if (!Array.isArray(latentDimensions)) latentDimensions = [latentDimensions];
-	var manifestDimensions = req.body.manifestDimension;
-	if (!Array.isArray(manifestDimensions)) manifestDimensions = [manifestDimensions];
+	var i,
+		j,
+		latentNumber = req.body.latentNumber,
+		manifestNumber = req.body.manifestNumber,
+		latentDimensions = req.body.latentDimension,
+		manifestDimensions = req.body.manifestDimension,
+		mods = [],
+		commands = "";
 
-	var mods = [];
-	for (var i = 0; i < latentNumber; i++) {
+	if (!Array.isArray(latentDimensions)) {
+		latentDimensions = [latentDimensions];
+	}
+	if (!Array.isArray(manifestDimensions)) {
+		manifestDimensions = [manifestDimensions];
+	}
+
+	for (i = 0; i < latentNumber; i++) {
 		mods.push(latentNames[i]);
-		for (var j = 0; j < manifestNumber; j++) {
+		for (j = 0; j < manifestNumber; j++) {
 			mods.push(manifestNames[j] + "|" + latentNames[i]);
 		}
 	}
 
-	/*console.log({
-		latentNumber: latentNumber,
-		manifestNumber: manifestNumber,
-		latentDimensions: latentDimensions,
-		manifestDimensions: manifestDimensions,
-		mods: mods
-	});*/
-
-	var commands =
+	commands =
 		"lat " + latentNumber + "\r\n" +
 		"man " + manifestNumber + "\r\n" +
 		"dim " + latentDimensions.concat(manifestDimensions).join(" ") + "\r\n" +
 		"mod " + mods.join(" ") + "\r\n" +
 		"dat [" + req.body.data + "]\r\n";
-	//res.json({ result: commands });return;
+
 	cliwrapper.callLem(commands, function (err, result) {
 		if (err) {
 			throw new Error(err);

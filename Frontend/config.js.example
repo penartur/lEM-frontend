@@ -1,2 +1,2 @@
-﻿exports.pathToCliWrapper = '../CLIWrapper/bin/Debug/penartur.lEM.CLIWrapper.exe';
+exports.pathToCliWrapper = '../CLIWrapper/bin/Debug/penartur.lEM.CLIWrapper.exe';
 exports.port = process.env.port || 3000;
