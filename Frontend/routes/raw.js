@@ -16,6 +16,6 @@ exports.post = function (req, res, next) {
 			throw new Error(err);
 		}
 		//res.render('rawresponse', { title: 'Direct lEM interface', result: result });
-		res.json({ result: result });
+		res.json({ commands: req.body.commands, result: result });
 	});
 };

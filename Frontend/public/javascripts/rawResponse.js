@@ -11,7 +11,9 @@ window.addEvent('domready', function () {
 				resetForm: false,
 				onSuccess: function (a, b, c, response) {
 					/*jslint undef:true*/
-					$('resultPlaceholder').set('text', JSON.decode(response).result);
+					var result = JSON.decode(response);
+					$('commandsPlaceholder').set('text', result.commands);
+					$('resultPlaceholder').set('text', result.result);
 					$('resultContainer').show();
 				},
 				onFailure: function (e) {

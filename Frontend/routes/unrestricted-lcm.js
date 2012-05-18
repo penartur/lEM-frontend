@@ -47,6 +47,6 @@ exports.post = function (req, res, next) {
 		if (err) {
 			throw new Error(err);
 		}
-		res.json({ result: result });
+		res.json({ commands: commands, result: result });
 	});
 };
