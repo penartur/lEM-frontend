@@ -89,15 +89,6 @@
     <Content Include="routes\unrestricted-lcm.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="views\index.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="views\raw.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="views\unrestricted-lcm.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="config.js.example">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
