@@ -25,7 +25,7 @@ window.addEvent('domready', function () {
 					for (true; i < num; i++) {
 						input = (new Element('input', {
 							type: 'number',
-							step: 'any',
+							min: 1,
 							required: true,
 							name: diName,
 							placeholder: 'Dimension of the ' + (i + 1) + 'th ' + title + ' variable',

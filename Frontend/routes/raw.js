@@ -12,10 +12,10 @@ exports.get = function (req, res, next) {
 exports.post = function (req, res, next) {
 	console.log(req.body);
 	cliwrapper.callLem(req.body.commands, function (err, result) {
-		if (err) {
-			throw new Error(err);
-		}
-		//res.render('rawresponse', { title: 'Direct lEM interface', result: result });
-		res.json({ commands: req.body.commands, result: result });
+		res.json({
+			commands: req.body.commands,
+			err: err,
+			result: result
+		});
 	});
 };

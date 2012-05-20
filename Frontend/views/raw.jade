@@ -11,10 +11,4 @@ append body
 		p
 			button.btn(type='submit') Run
 
-	div#resultContainer(style='display:none')
-		h3 Commands
-		pre#commandsPlaceholder
-		h3 Errors
-		pre#errorsPlaceholder
-		h3 Result
-		pre#resultPlaceholder
+	include includes/rawResponse

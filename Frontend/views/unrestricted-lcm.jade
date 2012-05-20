@@ -19,10 +19,4 @@ append body
 			p: textarea.input-xlarge.required(name='data', required, placeholder='data', rows=4)
 		p: button.btn(type='submit') Submit
 
-	div#resultContainer(style='display:none')
-		h3 Commands
-		pre#commandsPlaceholder
-		h3 Errors
-		pre#errorsPlaceholder
-		h3 Result
-		pre#resultPlaceholder
+	include includes/rawResponse
