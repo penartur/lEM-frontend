@@ -1,7 +1,8 @@
 "use strict";
 
-var spawn = require('child_process').spawn;
-var config = require('../config');
+var spawn = require('child_process').spawn,
+	markdown = require('markdown').markdown,
+	config = require('../config');
 
 //callback is function(err, result)
 exports.callLem = function (input, callback) {
@@ -19,10 +20,7 @@ exports.callLem = function (input, callback) {
 		if (code !== 0) {
 			error = "Return code is " + code + "\r\n" + error;
 		}
-		if (error !== "") {
-			return callback(error);
-		}
-		return callback(false, result);
+		return callback(error, markdown.toHTML(result.replace(/ *\* */g, '*')));
 	});
 	wrapper.stdin.write(input);
 	wrapper.stdin.end();

@@ -12,8 +12,10 @@ window.addEvent('domready', function () {
 				onSuccess: function (a, b, c, response) {
 					/*jslint undef:true*/
 					var result = JSON.decode(response);
+					console.log(result);
 					$('commandsPlaceholder').set('text', result.commands);
-					$('resultPlaceholder').set('text', result.result);
+					$('errorsPlaceholder').set('text', result.err);
+					$('resultPlaceholder').set('html', result.result);
 					$('resultContainer').show();
 				},
 				onFailure: function (e) {

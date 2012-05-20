@@ -44,9 +44,10 @@ exports.post = function (req, res, next) {
 		"dat [" + req.body.data + "]\r\n";
 
 	cliwrapper.callLem(commands, function (err, result) {
-		if (err) {
-			throw new Error(err);
-		}
-		res.json({ commands: commands, result: result });
+		res.send({
+			commands: commands,
+			err: err,
+			result: result
+		});
 	});
 };
