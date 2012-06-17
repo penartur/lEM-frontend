@@ -1,6 +1,7 @@
 "use strict";
 
-var cliwrapper = require('../common/cliwrapper.js');
+var _ = require('underscore'),
+	cliwrapper = require('../common/cliwrapper.js');
 
 var latentNames = ['X', 'Y', 'Z'],
 	manifestNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
@@ -12,12 +13,16 @@ exports.get = function (req, res, next) {
 	});
 };
 
-var validateInput = function (latentNumber, manifestNumber, latentDimensions, manifestDimensions, data) {
+var validateInput = function (modelType, latentNumber, manifestNumber, latentDimensions, manifestDimensions, data) {
 	var i,
 		a,
 		b,
 		c,
 		result = {};
+
+	if (modelType !== 'classic' && modelType !== 'loglinear' && modelType !== 'combined') {
+		result.modelType = 'Invalid value ' + modelType;
+	}
 
 	if (latentDimensions.length !== latentNumber) {
 		result.latentDimensions = "Length mismatch: expected " + manifestNumber + "; got " + manifestDimensions.length;
@@ -41,7 +46,7 @@ var validateInput = function (latentNumber, manifestNumber, latentDimensions, ma
 	} else {
 		c = [];
 		for (i = 0; i < a; i++) {
-			if (isNaN(parseFloat(b[i])) || (/[^01-9\.]/).test(b[i])) {
+			if (isNaN(parseFloat(b[i])) || !(/^[01-9\.]+$/).test(b[i])) {
 				c.push(b[i] + " is not a number");
 			}
 		}
@@ -53,9 +58,41 @@ var validateInput = function (latentNumber, manifestNumber, latentDimensions, ma
 	return result;
 };
 
-exports.post = function (req, res, next) {
+var getModelSpecification = function (modelType, latentNumber, manifestNumber) {
 	var i,
-		j,
+		j;
+
+	switch (modelType) {
+	case 'classic':
+		return _.flatten(_.map(_.first(latentNames, latentNumber), function (latentName) {
+			return _.map(_.first(manifestNames, manifestNumber), function (manifestName) {
+				return manifestName + '|' + latentName;
+			});
+		})).join(' ');
+	case 'loglinear':
+		return '{' + _.flatten(_.map(_.first(latentNames, latentNumber), function (latentName) {
+			return _.map(_.first(manifestNames, manifestNumber), function (manifestName) {
+				return latentName + manifestName;
+			});
+		})).join(',') + '}';
+	case 'combined':
+		return _.flatten(_.map(_.first(latentNames, latentNumber), function (latentName) {
+			return [
+				latentName,
+				'{' + latentName + '}',
+				_.map(_.first(manifestNames, manifestNumber), function (manifestName) {
+					return [
+						manifestName + '|' + latentName,
+						'{' + latentName + manifestName + '}'
+					];
+				})
+			];
+		})).join(' ');
+	}
+};
+
+exports.post = function (req, res, next) {
+	var modelType = req.body.modelType,
 		latentNumber = parseInt(req.body.latentNumber, 10),
 		manifestNumber = parseInt(req.body.manifestNumber, 10),
 		latentDimensions = req.body.latentDimension,
@@ -71,21 +108,21 @@ exports.post = function (req, res, next) {
 		manifestDimensions = [manifestDimensions];
 	}
 
-	for (i = 0; i < latentNumber; i++) {
-		mods.push(latentNames[i]);
-		for (j = 0; j < manifestNumber; j++) {
-			mods.push(manifestNames[j] + "|" + latentNames[i]);
-		}
-	}
-
 	commands =
 		"lat " + latentNumber + "\r\n" +
 		"man " + manifestNumber + "\r\n" +
 		"dim " + latentDimensions.concat(manifestDimensions).join(" ") + "\r\n" +
-		"mod " + mods.join(" ") + "\r\n" +
+		"mod " + getModelSpecification(modelType, latentNumber, manifestNumber) + "\r\n" +
 		"dat [" + req.body.data + "]\r\n";
 
-	validationResult = validateInput(latentNumber, manifestNumber, latentDimensions, manifestDimensions, req.body.data);
+	validationResult = validateInput(
+		modelType,
+		latentNumber,
+		manifestNumber,
+		latentDimensions,
+		manifestDimensions,
+		req.body.data
+	);
 	if (validationResult && Object.keys(validationResult).length > 0) {
 		console.log(validationResult);
 		return res.send({ commands: commands, validationErr: validationResult });

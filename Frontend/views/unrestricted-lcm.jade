@@ -8,6 +8,17 @@ append body
 	.page-header: h1 Unrestricted latent class model
 
 	form.rawResponse.well#unrestrictedLcmForm(method='post', action = '')
+		fieldset#modelType
+			legend Model type
+			p: label.radio
+				input.required(type='radio', required, name='modelType', value='classic')
+				| Classical formulation
+			p: label.radio
+				input.required(type='radio', required, name='modelType', value='loglinear')
+				| Log-linear model
+			p: label.radio
+				input.required(type='radio', required, name='modelType', value='combined')
+				| Linear-logistic model
 		fieldset#latentFieldset
 			legend Latent variables
 			p: input.required(type='number', min='1', required, name='latentNumber', placeholder='Number of latent variables', data-validators='validate-integer')
