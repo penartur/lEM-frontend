@@ -13,7 +13,11 @@ exports.get = function (req, res, next) {
 	});
 };
 
-var validateInput = function (modelType, latentNumber, manifestNumber, latentDimensions, manifestDimensions, data) {
+var toInt = function (strValue) {
+	return parseInt(strValue, 10);
+};
+
+var validateInput = function (modelType, latentNumber, manifestNumber, latentDimensions, manifestDimensions, dataType, data, respondentsNumber, answers) {
 	var i,
 		a,
 		b,
@@ -33,26 +37,49 @@ var validateInput = function (modelType, latentNumber, manifestNumber, latentDim
 			"Length mismatch: expected " + manifestNumber + "; got " + manifestDimensions.length;
 	}
 
-	a = 1;
-	for (i = 0; i < manifestNumber; i++) {
-		a *= manifestDimensions[i];
-	}
+	if (dataType === 'raw') {
+		if (!data) {
+			result.data = 'Missing data';
+		} else {
 
-	console.log(manifestDimensions);
-	console.log("a: " + a);
-	b = data.split(' ');
-	if (b.length !== a) {
-		result.data = "Length mismatch: expected " + a + "; got " + b.length;
-	} else {
-		c = [];
-		for (i = 0; i < a; i++) {
-			if (isNaN(parseFloat(b[i])) || !(/^[01-9\.]+$/).test(b[i])) {
-				c.push(b[i] + " is not a number");
+			a = 1;
+			for (i = 0; i < manifestNumber; i++) {
+				a *= manifestDimensions[i];
+			}
+
+			b = data.split(' ');
+			if (b.length !== a) {
+				result.data = "Length mismatch: expected " + a + "; got " + b.length;
+			} else {
+				c = [];
+				for (i = 0; i < a; i++) {
+					if (isNaN(parseFloat(b[i])) || !(/^[01-9\.]+$/).test(b[i])) {
+						c.push(b[i] + " is not a number");
+					}
+				}
+				if (c.length > 0) {
+					result.data = c;
+				}
 			}
 		}
-		if (c.length > 0) {
-			result.data = c;
+	} else if (dataType === 'plain') {
+		if (!answers) {
+			result.answers = 'Missing answers';
+		} else if (answers.length !== manifestNumber) {
+			result.answers = 'Invalid number of answers per respondent: expected ' + manifestNumber + ', got ' + answers.length;
+		} else {
+			a = {};
+			for (i = 0; i < manifestNumber; i++) {
+				if (answers[i].length !== respondentsNumber) {
+					a[i] = 'Invalid number of respondents for question: expected ' + respondentsNumber + ', got ' + respondentsNumber;
+				}
+			}
+			if (!_.isEmpty(a)) {
+				result.answers = a;
+			}
 		}
+	} else {
+		result.dataType = 'Invalid value ' + dataType;
 	}
 
 	return result;
@@ -91,13 +118,44 @@ var getModelSpecification = function (modelType, latentNumber, manifestNumber) {
 	}
 };
 
+//answersT is respondentId => questionId => value dictionary
+var getDataFromPlain = function (manifestDimensions, answersT, currentValues) {
+	currentValues = currentValues || [];
+
+	var sliced;
+	if (!manifestDimensions.length) {
+		return _.size(_.filter(answersT, _.bind(_.isEqual, null, currentValues)));
+	}
+
+	sliced = manifestDimensions.slice(1);
+	return _.map(_.range(1, manifestDimensions[0] + 1), function (i) {
+		return getDataFromPlain(sliced, answersT, _.flatten([currentValues, i]));
+	});
+};
+
+var getData = function (manifestNumber, manifestDimensions, dataType, rawData, respondentsNumber, answers) {
+	if (dataType === 'raw') {
+		return rawData;
+	} else {
+		return getDataFromPlain(
+			_.map(manifestDimensions, toInt),
+			_.zip.apply(null, _.map(answers, function (perRespondent) {
+				return _.map(perRespondent, toInt);
+			}))
+		);
+	}
+};
+
 exports.post = function (req, res, next) {
 	var modelType = req.body.modelType,
-		latentNumber = parseInt(req.body.latentNumber, 10),
-		manifestNumber = parseInt(req.body.manifestNumber, 10),
+		latentNumber = toInt(req.body.latentNumber),
+		manifestNumber = toInt(req.body.manifestNumber),
 		latentDimensions = req.body.latentDimension,
 		manifestDimensions = req.body.manifestDimension,
-		mods = [],
+		dataType = req.body.dataType,
+		data = req.body.data,
+		respondentsNumber = toInt(req.body.respondentsNumber),
+		answers = req.body.answers,
 		validationResult,
 		commands = "";
 
@@ -108,25 +166,29 @@ exports.post = function (req, res, next) {
 		manifestDimensions = [manifestDimensions];
 	}
 
-	commands =
-		"lat " + latentNumber + "\r\n" +
-		"man " + manifestNumber + "\r\n" +
-		"dim " + latentDimensions.concat(manifestDimensions).join(" ") + "\r\n" +
-		"mod " + getModelSpecification(modelType, latentNumber, manifestNumber) + "\r\n" +
-		"dat [" + req.body.data + "]\r\n";
-
 	validationResult = validateInput(
 		modelType,
 		latentNumber,
 		manifestNumber,
 		latentDimensions,
 		manifestDimensions,
-		req.body.data
+		dataType,
+		data,
+		respondentsNumber,
+		answers
 	);
-	if (validationResult && Object.keys(validationResult).length > 0) {
+	if (!_.isEmpty(validationResult)) {
+		console.log(req.body);
 		console.log(validationResult);
-		return res.send({ commands: commands, validationErr: validationResult });
+		return res.send({ validationErr: validationResult });
 	}
+
+	commands =
+		"lat " + latentNumber + "\r\n" +
+		"man " + manifestNumber + "\r\n" +
+		"dim " + latentDimensions.concat(manifestDimensions).join(" ") + "\r\n" +
+		"mod " + getModelSpecification(modelType, latentNumber, manifestNumber) + "\r\n" +
+		"dat [" + getData(manifestNumber, manifestDimensions, dataType, data, respondentsNumber, answers) + "]\r\n";
 
 	return cliwrapper.callLem(commands, function (err, result) {
 		return res.send({

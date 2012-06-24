@@ -8,7 +8,7 @@ append body
 	.page-header: h1 Unrestricted latent class model
 
 	form.rawResponse.well#unrestrictedLcmForm(method='post', action = '')
-		fieldset#modelType
+		fieldset#modelTypeFieldset
 			legend Model type
 			p: label.radio
 				input.required(type='radio', required, name='modelType', value='classic')
@@ -25,9 +25,25 @@ append body
 		fieldset#manifestFieldset
 			legend Manifest variables
 			p: input.required(type='number', min='1', required, name='manifestNumber', placeholder='Number of manifest variables', data-validators='validate-integer')
-		fieldset
+		fieldset#dataTypeFieldset
+			legend Data type
+			p: label.radio
+				input.required(type='radio', required, name='dataType', value='raw')
+				| Raw data textarea (in lEM format)
+			p: label.radio
+				input.required(type='radio', required, name='dataType', value='plain')
+				| Per-respondent answers
+		fieldset#rawDataFieldset(style='display: none')
 			legend Data
 			p: textarea.input-xlarge.required(name='data', required, placeholder='data', rows=4)
-		p: button.btn(type='submit') Submit
+		fieldset#plainDataFieldset(style='display: none')
+			legend Data
+			p: input.required(type='number', min='1', required, name='respondentsNumber', placeholder='Number of respondents')
+			table.table.table-bordered.table-striped#plainDataTable
+				thead
+					tr
+						th Respondent number
+				tbody
+		p: button.btn.btn-primary(type='submit') Submit
 
 	include includes/rawResponse
