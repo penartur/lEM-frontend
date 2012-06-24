@@ -13,7 +13,7 @@ exports.get = function (req, res, next) {
 	});
 };
 
-var validateInput = function (modelType, latentNumber, manifestNumber, latentDimensions, manifestDimensions, data) {
+var validateInput = function (modelType, latentNumber, manifestNumber, latentDimensions, manifestDimensions, dataType, data) {
 	var i,
 		a,
 		b,
@@ -33,26 +33,35 @@ var validateInput = function (modelType, latentNumber, manifestNumber, latentDim
 			"Length mismatch: expected " + manifestNumber + "; got " + manifestDimensions.length;
 	}
 
-	a = 1;
-	for (i = 0; i < manifestNumber; i++) {
-		a *= manifestDimensions[i];
-	}
+	if (dataType == 'raw') {
+		if (!data) {
+			result.data = 'Missing data';
+		} else {
 
-	console.log(manifestDimensions);
-	console.log("a: " + a);
-	b = data.split(' ');
-	if (b.length !== a) {
-		result.data = "Length mismatch: expected " + a + "; got " + b.length;
-	} else {
-		c = [];
-		for (i = 0; i < a; i++) {
-			if (isNaN(parseFloat(b[i])) || !(/^[01-9\.]+$/).test(b[i])) {
-				c.push(b[i] + " is not a number");
+			a = 1;
+			for (i = 0; i < manifestNumber; i++) {
+				a *= manifestDimensions[i];
+			}
+
+			console.log(manifestDimensions);
+			console.log("a: " + a);
+			b = data.split(' ');
+			if (b.length !== a) {
+				result.data = "Length mismatch: expected " + a + "; got " + b.length;
+			} else {
+				c = [];
+				for (i = 0; i < a; i++) {
+					if (isNaN(parseFloat(b[i])) || !(/^[01-9\.]+$/).test(b[i])) {
+						c.push(b[i] + " is not a number");
+					}
+				}
+				if (c.length > 0) {
+					result.data = c;
+				}
 			}
 		}
-		if (c.length > 0) {
-			result.data = c;
-		}
+	} else {
+		result.dataType = 'Invalid value ' + dataType;
 	}
 
 	return result;
@@ -97,8 +106,10 @@ exports.post = function (req, res, next) {
 		manifestNumber = parseInt(req.body.manifestNumber, 10),
 		latentDimensions = req.body.latentDimension,
 		manifestDimensions = req.body.manifestDimension,
-		mods = [],
+		dataType = req.body.dataType,
+		data = req.body.data,
 		validationResult,
+		lemData,
 		commands = "";
 
 	if (!Array.isArray(latentDimensions)) {
@@ -108,25 +119,27 @@ exports.post = function (req, res, next) {
 		manifestDimensions = [manifestDimensions];
 	}
 
-	commands =
-		"lat " + latentNumber + "\r\n" +
-		"man " + manifestNumber + "\r\n" +
-		"dim " + latentDimensions.concat(manifestDimensions).join(" ") + "\r\n" +
-		"mod " + getModelSpecification(modelType, latentNumber, manifestNumber) + "\r\n" +
-		"dat [" + req.body.data + "]\r\n";
-
 	validationResult = validateInput(
 		modelType,
 		latentNumber,
 		manifestNumber,
 		latentDimensions,
 		manifestDimensions,
-		req.body.data
+		dataType,
+		data
 	);
 	if (validationResult && Object.keys(validationResult).length > 0) {
 		console.log(validationResult);
-		return res.send({ commands: commands, validationErr: validationResult });
+		return res.send({ validationErr: validationResult });
 	}
+
+	lemData = data;
+	commands =
+		"lat " + latentNumber + "\r\n" +
+		"man " + manifestNumber + "\r\n" +
+		"dim " + latentDimensions.concat(manifestDimensions).join(" ") + "\r\n" +
+		"mod " + getModelSpecification(modelType, latentNumber, manifestNumber) + "\r\n" +
+		"dat [" + lemData + "]\r\n";
 
 	return cliwrapper.callLem(commands, function (err, result) {
 		return res.send({
