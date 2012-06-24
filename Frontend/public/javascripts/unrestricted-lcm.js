@@ -230,15 +230,20 @@ window.addEvent('domready', function () {
 		return function (event) {
 			var value = form.getElement('input[name="dataType"]:checked').value;
 
+
 			form.getElement('#rawDataFieldset').hide();
+			form.getElement('#rawDataFieldset').getElement('textarea').disabled = true;
 			form.getElement('#plainDataFieldset').hide();
+			form.getElement('#plainDataFieldset').getElements('input').disabled = true;
 
 			if (value === 'raw') {
 				form.getElement('#rawDataFieldset').show();
+				form.getElement('#rawDataFieldset').getElement('textarea').disabled = false;
 			}
 
 			if (value === 'plain') {
 				form.getElement('#plainDataFieldset').show();
+				syncPlainDataWithManifestVariablesNumber(form);
 			}
 		};
 	}
