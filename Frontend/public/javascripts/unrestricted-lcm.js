@@ -73,6 +73,7 @@ window.addEvent('domready', function () {
 							min: 1,
 							required: true,
 							name: 'response',
+							class: 'input-mini',
 							placeholder: 'Answer',
 							'data-validators': 'validate-integer',
 							'data-manifestposition': i
