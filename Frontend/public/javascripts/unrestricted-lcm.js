@@ -92,7 +92,7 @@ window.addEvent('domready', function () {
 							min: 1,
 							max: form.getElement('input[name="manifestDimension"][data-manifestposition="' + i + '"]').value || undefined,
 							required: true,
-							name: 'response',
+							name: 'answers[' + i + ']',
 							'class': 'input-mini',
 							placeholder: 'Answer',
 							'data-validators': 'validate-integer',
