@@ -2,11 +2,30 @@
 
 /*global window: false*/
 window.addEvent('domready', function () {
-	/*global $: false, Element: false*/
+	/*global $: false, Element: false, Elements: false*/
 	var form = $('unrestrictedLcmForm'),
 		latentVariablesNumber = 0,
 		manifestVariablesNumber = 0,
 		respondentsNumber = 0;
+
+	/// fieldSpec could be either name of input or the single input element itself.
+	function initField(form, fieldSpec, changeEvent, defaultValue) {
+		var firstField = (typeof (fieldSpec) === 'string') ? form.getElement('input[name="' + fieldSpec + '"]') : fieldSpec,
+			fieldType = firstField.type,
+			fieldName = firstField.name,
+			fields = ((fieldType === 'radio') || (typeof (fieldSpec) === 'string')) ? form.getElements('input[name="' + fieldName + '"]') : new Elements([fieldSpec]);
+
+		fields.addEvent('change', changeEvent).addEvent('input', changeEvent);
+
+		if (defaultValue !== undefined) {
+			if (fieldType === 'radio') {
+				form.getElement('input[name="' + fieldName + '"][value="' + defaultValue + '"]').set('checked', true);
+			} else {
+				fields.set('value', defaultValue);
+			}
+			fields.fireEvent('change');
+		}
+	}
 
 	function numberChangeEvent(getExistingList, currentNumber, createNew, disableExisting, enableExisting, postprocess) {
 		postprocess = postprocess || function () { };
@@ -71,9 +90,10 @@ window.addEvent('domready', function () {
 						var input = (new Element('input', {
 							type: 'number',
 							min: 1,
+							max: form.getElement('input[name="manifestDimension"][data-manifestposition="' + i + '"]').value || undefined,
 							required: true,
 							name: 'response',
-							class: 'input-mini',
+							'class': 'input-mini',
 							placeholder: 'Answer',
 							'data-validators': 'validate-integer',
 							'data-manifestposition': i
@@ -153,12 +173,16 @@ window.addEvent('domready', function () {
 					required: true,
 					name: 'manifestDimension',
 					placeholder: 'Dimension of the ' + (i + 1) + 'th manifest variable',
-					'data-validators': 'validate-integer'
+					'data-validators': 'validate-integer',
+					'data-manifestposition': i
 				}));
 				mfs.grab(
 					(new Element('p', { 'class': 'manifestNumberDimensionP' })).grab(input),
 					'bottom'
 				);
+				initField(form, input, function (event) {
+					form.getElement('#plainDataTable').getElements('input[data-manifestposition="' + i + '"]').set({ max: this.value });
+				});
 			},
 			function (p) {
 				p.getElement('input').disabled = true;
@@ -217,22 +241,6 @@ window.addEvent('domready', function () {
 				form.getElement('#plainDataFieldset').show();
 			}
 		};
-	}
-
-	function initField(form, fieldName, changeEvent, defaultValue) {
-		var fields = form.getElements('input[name="' + fieldName + '"]'),
-			type = form.getElement('input[name="' + fieldName + '"]').type,
-			fieldToSet;
-
-		fields.addEvent('change', changeEvent).addEvent('input', changeEvent);
-
-		if (type === 'radio') {
-			form.getElement('input[name="' + fieldName + '"][value="' + defaultValue + '"]').set('checked', true);
-		} else {
-			fields.set('value', defaultValue);
-		}
-
-		fields.fireEvent('change');
 	}
 
 	initField(form, 'latentNumber', latentVariablesNumberChangeEvent(form), 1);
