@@ -161,6 +161,9 @@ var getData = function (manifestNumber, manifestDimensions, dataType, rawData, r
 		return getDataFromPlain(
 			_.map(manifestDimensions, toInt),
 			_.zip.apply(null, _.map(answers, function (perRespondent) {
+				if (!Array.isArray(perRespondent)) {
+					perRespondent = [perRespondent];
+				}
 				return _.map(perRespondent, toInt);
 			}))
 		);
