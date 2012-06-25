@@ -12,16 +12,16 @@ append body
 			legend Model type
 			p: label.radio
 				input.required(type='radio', required, name='modelType', value='classic')
-				| Classical formulation
+				| Classical unrestricted formulation
 			p: label.radio
 				input.required(type='radio', required, name='modelType', value='loglinear')
-				| Log-linear model
+				| Log-linear unrestricted model
 			p: label.radio
 				input.required(type='radio', required, name='modelType', value='combined')
-				| Linear-logistic model
+				| Linear-logistic unrestricted model
 			p: label.radio
 				input.required(type='radio', required, name='modelType', value='croon')
-				| Non-parametric ordinal model
+				| Non-parametric ordinal model (Croon's model)
 		fieldset#latentFieldset
 			legend Latent variables
 			p: input.required(type='number', min='1', required, name='latentNumber', placeholder='Number of latent variables', data-validators='validate-integer')
