@@ -1,11 +1,11 @@
 extends layout
 
 append scripts
-	script(language='Javascript', src='/javascripts/unrestricted-lcm.js')
+	script(language='Javascript', src='/javascripts/lcm.js')
 
 append body
 
-	.page-header: h1 Unrestricted latent class model
+	.page-header: h1 Latent class model
 
 	form.rawResponse.well#unrestrictedLcmForm(method='post', action = '')
 		fieldset#modelTypeFieldset

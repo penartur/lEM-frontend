@@ -7,9 +7,9 @@ var latentNames = ['X', 'Y', 'Z'],
 	manifestNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
 exports.get = function (req, res, next) {
-	res.render('unrestricted-lcm', {
-		currentPath: '/unrestricted-lcm/',
-		title: 'Unrestricted latent class model'
+	res.render('lcm', {
+		currentPath: '/lcm/',
+		title: 'Latent class model'
 	});
 };
 

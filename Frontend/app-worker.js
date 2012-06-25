@@ -35,8 +35,8 @@ exports.run = function () {
 	app.get('/', routes.index);
 	app.get('/raw/', routes.raw.get);
 	app.post('/raw/', routes.raw.post);
-	app.get('/unrestricted-lcm/', routes.unrestrictedLcm.get);
-	app.post('/unrestricted-lcm/', routes.unrestrictedLcm.post);
+	app.get('/lcm/', routes.lcm.get);
+	app.post('/lcm/', routes.lcm.post);
 
 	app.listen(config.port, function () {
 		console.log(

@@ -8,4 +8,4 @@ exports.index = function (req, res) {
 };
 
 exports.raw = require('./raw');
-exports.unrestrictedLcm = require('./unrestricted-lcm');
+exports.lcm = require('./lcm');

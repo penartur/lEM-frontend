@@ -56,7 +56,7 @@
     <Content Include="app-worker.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="public\javascripts\unrestricted-lcm.js">
+    <Content Include="public\javascripts\lcm.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="public\third-party\bootstrap\css\bootstrap-responsive.css">
@@ -86,7 +86,7 @@
     <Content Include="public\third-party\mootools\mootools-yui-compressed.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="routes\unrestricted-lcm.js">
+    <Content Include="routes\lcm.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="config.js.example">
@@ -107,7 +107,7 @@
     <Content Include="routes\raw.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="views\unrestricted-lcm.jade">
+    <Content Include="views\lcm.jade">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
