@@ -17,7 +17,18 @@ var toInt = function (strValue) {
 	return parseInt(strValue, 10);
 };
 
-var validateInput = function (modelType, latentNumber, manifestNumber, latentDimensions, manifestDimensions, manifestOrders, dataType, data, respondentsNumber, answers) {
+var validateInput = function (
+	modelType,
+	latentNumber,
+	manifestNumber,
+	latentDimensions,
+	manifestDimensions,
+	manifestOrders,
+	dataType,
+	data,
+	respondentsNumber,
+	answers
+) {
 	var i,
 		a,
 		b,
@@ -75,12 +86,16 @@ var validateInput = function (modelType, latentNumber, manifestNumber, latentDim
 		if (!answers) {
 			result.answers = 'Missing answers';
 		} else if (answers.length !== manifestNumber) {
-			result.answers = 'Invalid number of answers per respondent: expected ' + manifestNumber + ', got ' + answers.length;
+			result.answers =
+				'Invalid number of answers per respondent: ' +
+				'expected ' + manifestNumber + ', got ' + answers.length;
 		} else {
 			a = {};
 			for (i = 0; i < manifestNumber; i++) {
 				if (answers[i].length !== respondentsNumber) {
-					a[i] = 'Invalid number of respondents for question: expected ' + respondentsNumber + ', got ' + respondentsNumber;
+					a[i] =
+						'Invalid number of respondents for question: ' +
+						'expected ' + respondentsNumber + ', got ' + respondentsNumber;
 				}
 			}
 			if (!_.isEmpty(a)) {

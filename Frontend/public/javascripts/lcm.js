@@ -12,10 +12,14 @@ window.addEvent('domready', function () {
 
 	/// fieldSpec could be either name of input or the single input element itself.
 	function initField(form, fieldSpec, changeEvent, defaultValue) {
-		var firstField = (typeof (fieldSpec) === 'string') ? form.getElement('input[name="' + fieldSpec + '"]') : fieldSpec,
+		var firstField = (typeof (fieldSpec) === 'string')
+				? form.getElement('input[name="' + fieldSpec + '"]')
+				: fieldSpec,
 			fieldType = firstField.type,
 			fieldName = firstField.name,
-			fields = ((fieldType === 'radio') || (typeof (fieldSpec) === 'string')) ? form.getElements('input[name="' + fieldName + '"]') : new Elements([fieldSpec]);
+			fields = ((fieldType === 'radio') || (typeof (fieldSpec) === 'string'))
+				? form.getElements('input[name="' + fieldName + '"]')
+				: new Elements([fieldSpec]);
 
 		fields.addEvent('change', changeEvent).addEvent('input', changeEvent);
 
@@ -29,7 +33,14 @@ window.addEvent('domready', function () {
 		}
 	}
 
-	function numberChangeEvent(getExistingList, currentNumber, createNew, disableExisting, enableExisting, postprocess) {
+	function numberChangeEvent(
+		getExistingList,
+		currentNumber,
+		createNew,
+		disableExisting,
+		enableExisting,
+		postprocess
+	) {
 		var postprocesses = Array.prototype.slice.call(arguments, 5);
 		return function (event) {
 			return (function (num) {
@@ -55,7 +66,7 @@ window.addEvent('domready', function () {
 				for (i = 0; i < postprocesses.length; i++) {
 					postprocesses[i](num);
 				}
-			} (parseInt(this.value || '0', 10)));
+			}(parseInt(this.value || '0', 10)));
 		};
 	}
 
@@ -130,7 +141,11 @@ window.addEvent('domready', function () {
 						var input = (new Element('input', {
 								type: 'number',
 								min: 1,
-								max: form.getElement('input[name="manifestDimension"][data-manifestposition="' + i + '"]').value || undefined,
+								max:
+									form.getElement(
+										'input[name="manifestDimension"][data-manifestposition="' + i + '"]'
+									).value
+									|| undefined,
 								required: true,
 								name: 'answers[' + i + ']',
 								'class': 'input-mini',
@@ -141,7 +156,7 @@ window.addEvent('domready', function () {
 							td = (new Element('td')).grab(input);
 
 						row.grab(td, 'bottom');
-						dataType === 'plain' ? enabler(td) : disabler(td)
+						(dataType === 'plain' ? enabler : disabler)(td);
 					},
 					disabler,
 					dataType === 'plain' ? enabler : disabler
@@ -239,8 +254,14 @@ window.addEvent('domready', function () {
 						this.addClass('btn-info');
 					};
 
-				orderButtonForward.addEvent('change', orderChangeEvent).addEvent('input', orderChangeEvent).addEvent('click', orderChangeEvent);
-				orderButtonReverse.addEvent('change', orderChangeEvent).addEvent('input', orderChangeEvent).addEvent('click', orderChangeEvent);
+				orderButtonForward
+					.addEvent('change', orderChangeEvent)
+					.addEvent('input', orderChangeEvent)
+					.addEvent('click', orderChangeEvent);
+				orderButtonReverse
+					.addEvent('change', orderChangeEvent)
+					.addEvent('input', orderChangeEvent)
+					.addEvent('click', orderChangeEvent);
 
 				inputsGroup.grab(dimensionInput).grab(orderButtonForward).grab(orderButtonReverse);
 				mfs.grab(
@@ -248,7 +269,10 @@ window.addEvent('domready', function () {
 					'bottom'
 				);
 				initField(form, dimensionInput, function (event) {
-					form.getElement('#plainDataTable').getElements('input[data-manifestposition="' + i + '"]').set({ max: this.value });
+					form
+						.getElement('#plainDataTable')
+						.getElements('input[data-manifestposition="' + i + '"]')
+						.set({ max: this.value });
 				});
 				orderChangeEvent.call(orderButtonForward);
 			},
