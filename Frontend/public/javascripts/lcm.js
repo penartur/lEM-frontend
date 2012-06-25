@@ -7,7 +7,8 @@ window.addEvent('domready', function () {
 		latentVariablesNumber = 0,
 		manifestVariablesNumber = 0,
 		respondentsNumber = 0,
-		modelType = '';
+		modelType = '',
+		dataType = '';
 
 	/// fieldSpec could be either name of input or the single input element itself.
 	function initField(form, fieldSpec, changeEvent, defaultValue) {
@@ -91,6 +92,14 @@ window.addEvent('domready', function () {
 			thead = table.getElement('thead'),
 			tbody = table.getElement('tbody'),
 			mockCurrent = { get: function () { return 0; }, set: function () { } },
+			disabler = function (td) {
+				td.getElement('input').disabled = true;
+				td.hide();
+			},
+			enabler = function (td) {
+				td.getElement('input').disabled = false;
+				td.show();
+			},
 			syncHeadRow = function (row) {
 				numberChangeEvent(
 					function () {
@@ -119,29 +128,23 @@ window.addEvent('domready', function () {
 					mockCurrent,
 					function (i) {
 						var input = (new Element('input', {
-							type: 'number',
-							min: 1,
-							max: form.getElement('input[name="manifestDimension"][data-manifestposition="' + i + '"]').value || undefined,
-							required: true,
-							name: 'answers[' + i + ']',
-							'class': 'input-mini',
-							placeholder: 'Answer',
-							'data-validators': 'validate-integer',
-							'data-manifestposition': i
-						}));
-						row.grab(
-							(new Element('td')).grab(input),
-							'bottom'
-						);
+								type: 'number',
+								min: 1,
+								max: form.getElement('input[name="manifestDimension"][data-manifestposition="' + i + '"]').value || undefined,
+								required: true,
+								name: 'answers[' + i + ']',
+								'class': 'input-mini',
+								placeholder: 'Answer',
+								'data-validators': 'validate-integer',
+								'data-manifestposition': i
+							})),
+							td = (new Element('td')).grab(input);
+
+						row.grab(td, 'bottom');
+						dataType === 'plain' ? enabler(td) : disabler(td)
 					},
-					function (td) {
-						td.getElement('input').disabled = true;
-						td.hide();
-					},
-					function (td) {
-						td.getElement('input').enabled = true;
-						td.show();
-					}
+					disabler,
+					dataType === 'plain' ? enabler : disabler
 				).call(this);
 			};
 
@@ -301,22 +304,23 @@ window.addEvent('domready', function () {
 
 	function dataTypeChangeEvent(form) {
 		return function (event) {
-			var value = form.getElement('input[name="dataType"]:checked').value;
+			dataType = form.getElement('input[name="dataType"]:checked').value;
 
 			form.getElement('#rawDataFieldset').hide();
 			form.getElement('#rawDataFieldset').getElement('textarea').disabled = true;
 			form.getElement('#plainDataFieldset').hide();
 			form.getElement('#plainDataFieldset').getElements('input').disabled = true;
 
-			if (value === 'raw') {
+			if (dataType === 'raw') {
 				form.getElement('#rawDataFieldset').show();
 				form.getElement('#rawDataFieldset').getElement('textarea').disabled = false;
 			}
 
-			if (value === 'plain') {
+			if (dataType === 'plain') {
 				form.getElement('#plainDataFieldset').show();
-				syncPlainDataWithManifestVariablesNumber(form)();
 			}
+
+			syncPlainDataWithManifestVariablesNumber(form)();
 		};
 	}
 
