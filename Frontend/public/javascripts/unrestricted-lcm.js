@@ -6,7 +6,8 @@ window.addEvent('domready', function () {
 	var form = $('unrestrictedLcmForm'),
 		latentVariablesNumber = 0,
 		manifestVariablesNumber = 0,
-		respondentsNumber = 0;
+		respondentsNumber = 0,
+		modelType = '';
 
 	/// fieldSpec could be either name of input or the single input element itself.
 	function initField(form, fieldSpec, changeEvent, defaultValue) {
@@ -28,7 +29,7 @@ window.addEvent('domready', function () {
 	}
 
 	function numberChangeEvent(getExistingList, currentNumber, createNew, disableExisting, enableExisting, postprocess) {
-		postprocess = postprocess || function () { };
+		var postprocesses = Array.prototype.slice.call(arguments, 5);
 		return function (event) {
 			return (function (num) {
 				if (num < 1) {
@@ -50,8 +51,38 @@ window.addEvent('domready', function () {
 				for (true; i < num; i++) {
 					createNew(i);
 				}
-				postprocess(num);
+				for (i = 0; i < postprocesses.length; i++) {
+					postprocesses[i](num);
+				}
 			} (parseInt(this.value || '0', 10)));
+		};
+	}
+
+	function syncManifestVariablesSettingsWithModelType(form) {
+		var checkedModelTypeField = form.getElement('input[name="modelType"]:checked') || {},
+			checkedModelType = checkedModelTypeField.value,
+			mfs = form.getElement('#manifestFieldset'),
+			enabler = function (p) {
+				p.getElements('[data-datakind="manifestVariableOrder"]').set({ disabled: false }).show();
+			},
+			disabler = function (p) {
+				p.getElements('[data-datakind="manifestVariableOrder"]').set({ disabled: true }).hide();
+			},
+			mockCurrent = { get: function () { return 0; }, set: function () { } };
+
+		return function () {
+			var mockCaller = { value: manifestVariablesNumber };
+			numberChangeEvent(
+				function () {
+					return mfs.getElements('.manifestNumberDimensionP');
+				},
+				mockCurrent,
+				function () {
+					throw new Error('We shouldn\'t be here');
+				},
+				disabler,
+				modelType === 'croon' ? enabler : disabler
+			).call(mockCaller);
 		};
 	}
 
@@ -167,22 +198,56 @@ window.addEvent('domready', function () {
 				set: function (num) { manifestVariablesNumber = num; }
 			},
 			function (i) {
-				var input = (new Element('input', {
+				var dimensionInput = new Element('input', {
 					type: 'number',
 					min: 1,
 					required: true,
 					name: 'manifestDimension',
 					placeholder: 'Dimension of the ' + (i + 1) + 'th manifest variable',
 					'data-validators': 'validate-integer',
-					'data-manifestposition': i
-				}));
+					'data-manifestposition': i,
+					'data-datakind': 'manifestVariableDimension'
+				}),
+					orderButtonForward = new Element('button', {
+						'class': 'btn',
+						type: 'button',
+						text: 'Forward',
+						value: 'or1',
+						'data-datakind': 'manifestVariableOrder'
+					}),
+					orderButtonReverse = new Element('button', {
+						'class': 'btn',
+						type: 'button',
+						text: 'Reverse',
+						value: 'or2',
+						'data-datakind': 'manifestVariableOrder'
+					}),
+					orderValue = new Element('input', {
+						type: 'hidden',
+						required: true,
+						name: 'manifestOrder',
+						'data-datakind': 'manifestVariableOrder'
+					}),
+					inputsGroup = new Element('div', { 'class': 'input-append' }),
+					orderChangeEvent = function (event) {
+						orderValue.value = this.value;
+						orderButtonForward.removeClass('btn-info');
+						orderButtonReverse.removeClass('btn-info');
+						this.addClass('btn-info');
+					};
+
+				orderButtonForward.addEvent('change', orderChangeEvent).addEvent('input', orderChangeEvent).addEvent('click', orderChangeEvent);
+				orderButtonReverse.addEvent('change', orderChangeEvent).addEvent('input', orderChangeEvent).addEvent('click', orderChangeEvent);
+
+				inputsGroup.grab(dimensionInput).grab(orderButtonForward).grab(orderButtonReverse);
 				mfs.grab(
-					(new Element('p', { 'class': 'manifestNumberDimensionP' })).grab(input),
+					(new Element('p', { 'class': 'manifestNumberDimensionP' })).grab(inputsGroup).grab(orderValue),
 					'bottom'
 				);
-				initField(form, input, function (event) {
+				initField(form, dimensionInput, function (event) {
 					form.getElement('#plainDataTable').getElements('input[data-manifestposition="' + i + '"]').set({ max: this.value });
 				});
+				orderChangeEvent.call(orderButtonForward);
 			},
 			function (p) {
 				p.getElement('input').disabled = true;
@@ -192,7 +257,8 @@ window.addEvent('domready', function () {
 				p.getElement('input').disabled = false;
 				p.show();
 			},
-			syncPlainDataWithManifestVariablesNumber(form)
+			syncPlainDataWithManifestVariablesNumber(form),
+			syncManifestVariablesSettingsWithModelType(form)
 		);
 	}
 
@@ -226,10 +292,16 @@ window.addEvent('domready', function () {
 		);
 	}
 
+	function modelTypeChangeEvent(form) {
+		return function (event) {
+			modelType = form.getElement('input[name="modelType"]:checked').value;
+			syncManifestVariablesSettingsWithModelType(form)();
+		};
+	}
+
 	function dataTypeChangeEvent(form) {
 		return function (event) {
 			var value = form.getElement('input[name="dataType"]:checked').value;
-
 
 			form.getElement('#rawDataFieldset').hide();
 			form.getElement('#rawDataFieldset').getElement('textarea').disabled = true;
@@ -248,6 +320,7 @@ window.addEvent('domready', function () {
 		};
 	}
 
+	initField(form, 'modelType', modelTypeChangeEvent(form), 'croon');
 	initField(form, 'latentNumber', latentVariablesNumberChangeEvent(form), 1);
 	initField(form, 'manifestNumber', manifestVariablesNumberChangeEvent(form), 1);
 	initField(form, 'dataType', dataTypeChangeEvent(form), 'raw');

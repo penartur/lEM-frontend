@@ -19,6 +19,9 @@ append body
 			p: label.radio
 				input.required(type='radio', required, name='modelType', value='combined')
 				| Linear-logistic model
+			p: label.radio
+				input.required(type='radio', required, name='modelType', value='croon')
+				| Non-parametric ordinal model
 		fieldset#latentFieldset
 			legend Latent variables
 			p: input.required(type='number', min='1', required, name='latentNumber', placeholder='Number of latent variables', data-validators='validate-integer')
