@@ -225,7 +225,7 @@ window.addEvent('domready', function () {
 					orderValue = new Element('input', {
 						type: 'hidden',
 						required: true,
-						name: 'manifestOrder',
+						name: 'manifestOrders',
 						'data-datakind': 'manifestVariableOrder'
 					}),
 					inputsGroup = new Element('div', { 'class': 'input-append' }),

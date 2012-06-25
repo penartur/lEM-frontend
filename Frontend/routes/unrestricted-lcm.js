@@ -17,14 +17,23 @@ var toInt = function (strValue) {
 	return parseInt(strValue, 10);
 };
 
-var validateInput = function (modelType, latentNumber, manifestNumber, latentDimensions, manifestDimensions, dataType, data, respondentsNumber, answers) {
+var validateInput = function (modelType, latentNumber, manifestNumber, latentDimensions, manifestDimensions, manifestOrders, dataType, data, respondentsNumber, answers) {
 	var i,
 		a,
 		b,
 		c,
 		result = {};
 
-	if (modelType !== 'classic' && modelType !== 'loglinear' && modelType !== 'combined') {
+	if (modelType === 'classic' || modelType === 'loglinear' || modelType === 'combined') {
+		if (manifestOrders.length) {
+			result.manifestOrders = 'manifestOrders passed for ' + modelType;
+		}
+	} else if (modelType === 'croon') {
+		if (manifestOrders.length !== manifestNumber) {
+			result.manifestOrders =
+				'Length mismatch: expected ' + manifestNumber + '; got ' + manifestOrders.length;
+		}
+	} else {
 		result.modelType = 'Invalid value ' + modelType;
 	}
 
@@ -85,16 +94,19 @@ var validateInput = function (modelType, latentNumber, manifestNumber, latentDim
 	return result;
 };
 
-var getModelSpecification = function (modelType, latentNumber, manifestNumber) {
+var getModelSpecification = function (modelType, latentNumber, manifestNumber, manifestOrders) {
 	var i,
 		j;
 
 	switch (modelType) {
 	case 'classic':
 		return _.flatten(_.map(_.first(latentNames, latentNumber), function (latentName) {
-			return _.map(_.first(manifestNames, manifestNumber), function (manifestName) {
-				return manifestName + '|' + latentName;
-			});
+			return [
+				latentName,
+				_.map(_.first(manifestNames, manifestNumber), function (manifestName) {
+					return manifestName + '|' + latentName;
+				})
+			];
 		})).join(' ');
 	case 'loglinear':
 		return '{' + _.flatten(_.map(_.first(latentNames, latentNumber), function (latentName) {
@@ -112,6 +124,15 @@ var getModelSpecification = function (modelType, latentNumber, manifestNumber) {
 						manifestName + '|' + latentName,
 						'{' + latentName + manifestName + '}'
 					];
+				})
+			];
+		})).join(' ');
+	case 'croon':
+		return _.flatten(_.map(_.first(latentNames, latentNumber), function (latentName) {
+			return [
+				latentName,
+				_.map(_.first(manifestNames, manifestNumber), function (manifestName, i) {
+					return manifestName + '|' + latentName + ' ' + manifestOrders[i];
 				})
 			];
 		})).join(' ');
@@ -152,6 +173,7 @@ exports.post = function (req, res, next) {
 		manifestNumber = toInt(req.body.manifestNumber),
 		latentDimensions = req.body.latentDimension,
 		manifestDimensions = req.body.manifestDimension,
+		manifestOrders = req.body.manifestOrders,
 		dataType = req.body.dataType,
 		data = req.body.data,
 		respondentsNumber = toInt(req.body.respondentsNumber),
@@ -165,6 +187,9 @@ exports.post = function (req, res, next) {
 	if (!Array.isArray(manifestDimensions)) {
 		manifestDimensions = [manifestDimensions];
 	}
+	if (!Array.isArray(manifestOrders)) {
+		manifestOrders = [manifestOrders];
+	}
 
 	validationResult = validateInput(
 		modelType,
@@ -172,6 +197,7 @@ exports.post = function (req, res, next) {
 		manifestNumber,
 		latentDimensions,
 		manifestDimensions,
+		manifestOrders,
 		dataType,
 		data,
 		respondentsNumber,
@@ -187,7 +213,7 @@ exports.post = function (req, res, next) {
 		"lat " + latentNumber + "\r\n" +
 		"man " + manifestNumber + "\r\n" +
 		"dim " + latentDimensions.concat(manifestDimensions).join(" ") + "\r\n" +
-		"mod " + getModelSpecification(modelType, latentNumber, manifestNumber) + "\r\n" +
+		"mod " + getModelSpecification(modelType, latentNumber, manifestNumber, manifestOrders) + "\r\n" +
 		"dat [" + getData(manifestNumber, manifestDimensions, dataType, data, respondentsNumber, answers) + "]\r\n";
 
 	return cliwrapper.callLem(commands, function (err, result) {
