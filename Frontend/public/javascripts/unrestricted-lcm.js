@@ -315,7 +315,7 @@ window.addEvent('domready', function () {
 
 			if (value === 'plain') {
 				form.getElement('#plainDataFieldset').show();
-				syncPlainDataWithManifestVariablesNumber(form);
+				syncPlainDataWithManifestVariablesNumber(form)();
 			}
 		};
 	}
