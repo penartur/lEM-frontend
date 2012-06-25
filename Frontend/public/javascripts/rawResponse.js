@@ -8,6 +8,10 @@ window.addEvent('domready', function () {
 		f.init = function () {
 			var request = new Form.Request(f, null, {
 				requestOptions: {
+					useSpinner: true,
+					spinnerOptions: {
+						message: 'Executing...'
+					}
 				},
 				resetForm: false,
 				onSuccess: function (a, b, c, response) {
