@@ -86,6 +86,12 @@
     <Content Include="public\third-party\mootools\mootools-yui-compressed.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="public\third-party\mootools\spinner.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="public\third-party\mootools\spinner.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="routes\lcm.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
