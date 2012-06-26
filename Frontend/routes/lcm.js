@@ -17,6 +17,16 @@ var toInt = function (strValue) {
 	return parseInt(strValue, 10);
 };
 
+var toArray = function (input) {
+	if (!input) {
+		return [];
+	} else if (!Array.isArray(input)) {
+		return [input];
+	} else {
+		return input;
+	}
+}
+
 var validateInput = function (
 	modelType,
 	latentNumber,
@@ -189,25 +199,15 @@ exports.post = function (req, res, next) {
 	var modelType = req.body.modelType,
 		latentNumber = toInt(req.body.latentNumber),
 		manifestNumber = toInt(req.body.manifestNumber),
-		latentDimensions = req.body.latentDimension,
-		manifestDimensions = req.body.manifestDimension,
-		manifestOrders = req.body.manifestOrders,
+		latentDimensions = toArray(req.body.latentDimension),
+		manifestDimensions = toArray(req.body.manifestDimension),
+		manifestOrders = toArray(req.body.manifestOrders),
 		dataType = req.body.dataType,
 		data = req.body.data,
 		respondentsNumber = toInt(req.body.respondentsNumber),
 		answers = req.body.answers,
 		validationResult,
 		commands = "";
-
-	if (!Array.isArray(latentDimensions)) {
-		latentDimensions = [latentDimensions];
-	}
-	if (!Array.isArray(manifestDimensions)) {
-		manifestDimensions = [manifestDimensions];
-	}
-	if (!Array.isArray(manifestOrders)) {
-		manifestOrders = [manifestOrders];
-	}
 
 	validationResult = validateInput(
 		modelType,
