@@ -328,14 +328,14 @@ window.addEvent('domready', function () {
 			modelType = form.getElement('input[name="modelType"]:checked').value;
 			if (modelType !== 'loglinear') {
 				form.getElement('input[name="latentNumber"]')
-					.set({ value: 1, max: 1 })
+					.set({ type: 'text', readonly: true, value: 1 })
 					.fireEvent('change')
-					.addClass('disabled');
+					.addClass('uneditable-input');
 			} else {
 				form.getElement('input[name="latentNumber"]')
-					.removeClass('disabled')
-					.erase('max')
-					.set('value', backupLatentVariablesNumber)
+					.removeClass('uneditable-input')
+					.erase('readonly')
+					.set({ type: 'number', min: '1', value: backupLatentVariablesNumber })
 					.fireEvent('change');
 			}
 			syncManifestVariablesSettingsWithModelType(form)();
