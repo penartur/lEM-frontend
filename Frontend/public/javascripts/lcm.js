@@ -230,17 +230,17 @@ window.addEvent('domready', function () {
 					orderButtonForward = new Element('button', {
 						'class': 'btn',
 						type: 'button',
-						text: 'Forward',
+						text: ' Forward',
 						value: 'or1',
 						'data-datakind': 'manifestVariableOrder'
-					}),
+					}).grab(new Element('i', { 'class': 'icon-chevron-down' }), 'top'),
 					orderButtonReverse = new Element('button', {
 						'class': 'btn',
 						type: 'button',
-						text: 'Reverse',
+						text: ' Reverse',
 						value: 'or2',
 						'data-datakind': 'manifestVariableOrder'
-					}),
+					}).grab(new Element('i', { 'class': 'icon-chevron-up' }), 'top'),
 					orderValue = new Element('input', {
 						type: 'hidden',
 						required: true,
@@ -250,9 +250,9 @@ window.addEvent('domready', function () {
 					inputsGroup = new Element('div', { 'class': 'input-append' }),
 					orderChangeEvent = function (event) {
 						orderValue.value = this.value;
-						orderButtonForward.removeClass('btn-info');
-						orderButtonReverse.removeClass('btn-info');
-						this.addClass('btn-info');
+						orderButtonForward.removeClass('active');
+						orderButtonReverse.removeClass('active');
+						this.addClass('active');
 					};
 
 				orderButtonForward
