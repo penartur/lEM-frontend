@@ -5,6 +5,7 @@ window.addEvent('domready', function () {
 	/*global $: false, Element: false, Elements: false*/
 	var form = $('unrestrictedLcmForm'),
 		latentVariablesNumber = 0,
+		backupLatentVariablesNumber = 1,
 		manifestVariablesNumber = 0,
 		respondentsNumber = 0,
 		modelType = '',
@@ -321,7 +322,22 @@ window.addEvent('domready', function () {
 
 	function modelTypeChangeEvent(form) {
 		return function (event) {
+			if (modelType === 'loglinear') {
+				backupLatentVariablesNumber = latentVariablesNumber;
+			}
 			modelType = form.getElement('input[name="modelType"]:checked').value;
+			if (modelType !== 'loglinear') {
+				form.getElement('input[name="latentNumber"]')
+					.set({ value: 1, max: 1 })
+					.fireEvent('change')
+					.addClass('disabled');
+			} else {
+				form.getElement('input[name="latentNumber"]')
+					.removeClass('disabled')
+					.erase('max')
+					.set('value', backupLatentVariablesNumber)
+					.fireEvent('change');
+			}
 			syncManifestVariablesSettingsWithModelType(form)();
 		};
 	}
