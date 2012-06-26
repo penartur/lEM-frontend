@@ -62,6 +62,10 @@ var validateInput = function (
 		result.latentDimensions = "Length mismatch: expected " + manifestNumber + "; got " + manifestDimensions.length;
 	}
 
+	if (latentNumber > 1 && modelType !== 'loglinear') {
+		result.latentNumber = 'Only loglinear model supports more than one latent variable';
+	}
+
 	if (manifestDimensions.length !== manifestNumber) {
 		result.manifestDimensions =
 			"Length mismatch: expected " + manifestNumber + "; got " + manifestDimensions.length;
