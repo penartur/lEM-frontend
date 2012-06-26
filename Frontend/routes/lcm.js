@@ -25,7 +25,7 @@ var toArray = function (input) {
 	} else {
 		return input;
 	}
-}
+};
 
 var validateInput = function (
 	modelType,
