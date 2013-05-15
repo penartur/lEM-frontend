@@ -15,4 +15,4 @@ Additionally, it provides the **raw** interface which allows one to directly exe
 
 ## Screenshots
 
-[![Latent class analysis](http://cloud.github.com/downloads/penartur/lEM-frontend/lcm.png)](http://cloud.github.com/downloads/penartur/lEM-frontend/lcm.png)
+[![Latent class analysis](http://penartur.github.io/lEM-frontend/lcm.png)](http://penartur.github.io/lEM-frontend/lcm.png)
